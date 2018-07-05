@@ -59,14 +59,18 @@ $ejecutar2 = sqlsrv_query($con, $consulta2);
             <div class="form-group">
                 <label> Ciudad Estado </label>
 				<select name="Ciudad_Estado">
-					
                     <?php
+
                     while($fila = sqlsrv_fetch_array($ejecutar2)){
-                        echo "<option value='".$fila['id_estado']."' ";
-                        echo " SELECTED ";
-                        echo ">";
+                        echo "<option value='".$fila['id_estado']."'>";
                         echo $fila['nombre_estado'];
                         echo "</option>";
+                        if($nombreCP == $fila['id_estado']){
+                        echo "<option selected value='".$fila['id_estado']."'>";
+                        echo $fila['nombre_estado'];
+                        echo "</option>";
+                        
+                    }
                     }
                     ?>
 
@@ -92,21 +96,24 @@ $ejecutar2 = sqlsrv_query($con, $consulta2);
 <?php
 
 	if(isset($_POST['actualizar'])){
-			$actualizar_idProveedor = $_POST['idP'];
+			$actualizar_idProveedor = $_POST['idp'];
 			$actualizar_rfc = $_POST['rfc'];
 			$actualizar_nombreProveedor = $_POST['nombreP'];
-            $actualizar_ciudadProveedor = $_POST['Ciudad_estado'];
+            $actualizar_ciudadProveedor = $_POST['Ciudad_Estado'];
             $actualizar_telefono = $_POST['telefono'];
 			$actualizar_cp = $_POST['codigoP'];
             
-            echo $actualizar_nombre;
-			$consulta = "UPDATE ciudades SET id_proveedor='$actualizar_idProveedor', rfc_proveedor='$actualizar_rfc', nombre_proveedor='$actualizar_nombreProveedor', ciudad_proveedor = '$actualizar_ciudadProveedor', telefono_proveedor = '$actualizar_telefono', cp_proveedor = '$actualizar_cp' WHERE id_proveedor='$editar_id'";
+   
+			$consulta = "UPDATE Proveedores SET id_proveedor='$actualizar_idProveedor', rfc_proveedor='$actualizar_rfc', nombre_proveedor='$actualizar_nombreProveedor', ciudad_proveedor = '$actualizar_ciudadProveedor', telefono_proveedor = '$actualizar_telefono', cp_proveedor = '$actualizar_cp' WHERE id_proveedor='$editar_id'";
 
 			$ejecutar = sqlsrv_query($con, $consulta);
+			echo $ejecutar;
 
 			if($ejecutar){
 				echo "<script>alert('Datos actualizados')</script>";
-				echo "<script>window.open('formularioCiudades.php', '_self')</script>";
+				echo "<script>window.open('formularioProveedores.php', '_self')</script>";
+			}else{
+				//echo "<script>alert('ERROR al actualizar Datos actualizados')</script>";			
 			}			
 		}
 
