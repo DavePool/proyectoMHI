@@ -18,14 +18,40 @@ $ejecutarTipoMotores = sqlsrv_query($con, $consultaTipoMotores);
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <title>Formulario Proveedores</title>
+    <link rel="stylesheet" type="text/css" href="stylus.css">
+	<link href="https://fonts.googleapis.com/css?
+                family=Quicksand=500" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>Formulario Vehiculos</title>
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">     			
 	</head>
    <body>
+   <div class="wrapper">
+            <header>
+                <nav>
+                    <div class="menu-icon">
+                        <i class="fa fa-bars fa-2x"></i>
+                    </div>
+                    <div class="logo">
+                        Registro De Vehiculo
+                    </div>
+                    <div class="menu">
+                        <ul>
+                            <li><a href="http://localhost:8080/proy/Proyecto.html">INICIO</a></li>
+                            <li><a href="#">Acerca De</a></li>
+                            <li><a href="#">Reportes</a></li>
+                            <li><a href="#">Login</a></li>
+                            
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+
 	<div class="col-md-4 col-md-offset-2">
-		<h1>Formulario Vehiculos </h1>
+		
 
 		<form method="POST" action="formularioVehiculos.php">
 			<div class="form-group">
@@ -114,6 +140,33 @@ $ejecutarTipoMotores = sqlsrv_query($con, $consultaTipoMotores);
 		}
 
 	?>
+
+<script type="text/javascript">
+
+// Menu-toggle button
+
+$(document).ready(function() {
+	  $(".menu-icon").on("click", function() {
+			$("nav ul").toggleClass("showing");
+	  });
+});
+
+// Scrolling Effect
+
+$(window).on("scroll", function() {
+	  if($(window).scrollTop()) {
+			$('nav').addClass('black');
+	  }
+
+	  else {
+			$('nav').removeClass('black');
+	  }
+})
+
+
+</script>
+
+
 
 </body>
 </html>

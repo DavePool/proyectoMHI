@@ -8,94 +8,121 @@ include("conexion_sql.php");
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" type="text/css" href="stylus.css">
+    <link href="https://fonts.googleapis.com/css?
+                family=Quicksand=500" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
     
     <title>Registro De Entradas</title>
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">     			
 	</head>
    <body>
-	<div class="col-md-8 col-md-offset-2">
-		<h1>Registro De Entrada</h1>
+   <div class="wrapper">
+            <header>
+                <nav>
+                    <div class="menu-icon">
+                        <i class="fa fa-bars fa-2x"></i>
+                    </div>
+                    <div class="logo">
+                        Registro De Entradas
+                    </div>
+                    <div class="menu">
+                        <ul>
+                            <li><a href="http://localhost:8080/proy/Proyecto.html">INICIO</a></li>
+                            <li><a href="#">Acerca De</a></li>
+                            <li><a href="#">Reportes</a></li>
+                            <li><a href="#">Login</a></li>
+                            
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+        
+			<div class="col-md-8 col-md-offset-2">
 
-		<form method="POST" action="formularioEntradas.php">
-			<div class="form-group">
-				<label>Folio de Entrada:</label>
-				<input type="text" name="folio_entrada" class="form-control" placeholder="Escriba el folio de entrada"><br />
+				<form method="POST" action="formularioEntradas.php">
+					<div class="form-group">
+						<label>Folio de Entrada:</label>
+						<input type="text" name="folio_entrada" class="form-control" placeholder="Escriba el folio de entrada"><br />
+					</div>
+					<div class="form-group">
+						<label>Fecha de Entrada:</label>
+						<input type="date" name="fecha_entrada" class="form-control" placeholder="Escriba la fecha de entrada"><br />
+					</div>
+					<div class="form-group">
+						<label>Cantidad Entrada:</label>
+						<input type="text" name="cantidad_entrada" class="form-control" placeholder="Escriba la cantidad de entrada"><br />
+					</div>
+					<div class="form-group">				
+						<input type="submit" name="insert" class="btn btn-warning" value="INSERTAR DATOS"><br />
+					</div>
+				</form>
 			</div>
-			<div class="form-group">
-				<label>Fecha de Entrada:</label>
-				<input type="date" name="fecha_entrada" class="form-control" placeholder="Escriba la fecha de entrada"><br />
+			<br /><br /><br />
+
+			<?php
+				if(isset($_POST['insert'])){
+					$folio_entrada = $_POST['folio_entrada'];
+					$fecha_entrada = $_POST['fecha_entrada'];
+					$cantidad_entrada = $_POST['cantidad_entrada'];
+
+					$insertar = "INSERT INTO Refacciones (folio_entrada, fecha_entrada, existencia_refaccion )VALUES('$folio_entrada', '$fecha_entrada', '$cantidad_entrada')";
+
+					$ejecutar = sqlsrv_query($con, $insertar);
+
+					if($ejecutar){
+						echo "<h3>Insertado correctamente</h3>";
+					}
+
+				}
+
+			?>
+
+			<div class="col-md-8 col-md-offset-2">
+			<table class="table table-bordered table-responsive">
+				<tr>
+					<td>Folio de Entrada</td>
+					<td>Fecha de entrada</td>
+					<td>Cantidad Existente</td>
+					<td>Acción</td>
+					<td>Acción</td>
+				</tr>
+
+				<?php
+					$consulta = "SELECT * FROM Entradas";
+
+					$ejecutar = sqlsrv_query($con, $consulta);
+
+					$i = 0;
+
+					while($fila = sqlsrv_fetch_array($ejecutar)){
+						$folio_entrada = $fila['folio_entrada'];
+						$fecha_entrada = $fila['fecha_entrada'];
+						$cantidad_entrada = $fila['cantidad_entrada'];
+						$i++;
+					
+
+				?>
+
+				<tr align="center">
+					<td><?php echo $folio_entrada; ?></td>
+					<td><?php echo $fecha_entrada; ?></td>
+					<td><?php echo $cantidad_entrada; ?></td>
+					
+					<td><a href="formularioEntradas.php?editar=<?php echo $id; ?>">Editar</a></td>
+					<td><a href="formularioEntradas.php?borrar=<?php echo $id; ?>">Borrar</a></td>
+				</tr>
+
+				<?php } ?>
+
+			</table>
+			<center> <input type="button" value="Imprimir" onclick="window.print()"> </center> 
 			</div>
-			<div class="form-group">
-				<label>Cantidad Entrada:</label>
-				<input type="text" name="cantidad_entrada" class="form-control" placeholder="Escriba la cantidad de entrada"><br />
-			</div>
-			<div class="form-group">				
-				<input type="submit" name="insert" class="btn btn-warning" value="INSERTAR DATOS"><br />
-			</div>
-		</form>
 	</div>
-<br /><br /><br />
-
-	<?php
-		if(isset($_POST['insert'])){
-			$folio_entrada = $_POST['folio_entrada'];
-			$fecha_entrada = $_POST['fecha_entrada'];
-			$cantidad_entrada = $_POST['cantidad_entrada'];
-
-			$insertar = "INSERT INTO Refacciones (folio_entrada, fecha_entrada, existencia_refaccion )VALUES('$folio_entrada', '$fecha_entrada', '$cantidad_entrada')";
-
-			$ejecutar = sqlsrv_query($con, $insertar);
-
-			if($ejecutar){
-				echo "<h3>Insertado correctamente</h3>";
-			}
-
-		}
-
-	?>
-
-	<div class="col-md-8 col-md-offset-2">
-	<table class="table table-bordered table-responsive">
-		<tr>
-			<td>Folio de Entrada</td>
-			<td>Fecha de entrada</td>
-			<td>Cantidad Existente</td>
-			<td>Acción</td>
-			<td>Acción</td>
-		</tr>
-
-		<?php
-			$consulta = "SELECT * FROM Entradas";
-
-			$ejecutar = sqlsrv_query($con, $consulta);
-
-			$i = 0;
-
-			while($fila = sqlsrv_fetch_array($ejecutar)){
-				$folio_entrada = $fila['folio_entrada'];
-				$fecha_entrada = $fila['fecha_entrada'];
-				$cantidad_entrada = $fila['cantidad_entrada'];
-				$i++;
-			
-
-		?>
-
-		<tr align="center">
-			<td><?php echo $folio_entrada; ?></td>
-			<td><?php echo $fecha_entrada; ?></td>
-			<td><?php echo $cantidad_entrada; ?></td>
-			
-			<td><a href="formularioEntradas.php?editar=<?php echo $id; ?>">Editar</a></td>
-			<td><a href="formularioEntradas.php?borrar=<?php echo $id; ?>">Borrar</a></td>
-		</tr>
-
-		<?php } ?>
-
-	</table>
-	<center> <input type="button" value="Imprimir" onclick="window.print()"> </center> 
-	</div>
-
 	<?php
 		if(isset($_GET['editar'])){
 			include("editar.php");
@@ -120,3 +147,28 @@ include("conexion_sql.php");
 ?>
 </body>
 </html>
+
+<script type="text/javascript">
+
+// Menu-toggle button
+
+$(document).ready(function() {
+	  $(".menu-icon").on("click", function() {
+			$("nav ul").toggleClass("showing");
+	  });
+});
+
+// Scrolling Effect
+
+$(window).on("scroll", function() {
+	  if($(window).scrollTop()) {
+			$('nav').addClass('black');
+	  }
+
+	  else {
+			$('nav').removeClass('black');
+	  }
+})
+
+
+</script>

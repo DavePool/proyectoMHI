@@ -60,13 +60,15 @@ include("conexion_sql.php");
 		<tr>
 			<td>Folio de salida</td>
 			<td>Fecha de salida</td>
+			<td>Refaccion salida</td>	
 			<td>Cantidad Existente</td>
+			<td>Almacen salida</td>
 			<td>Acción</td>
 			<td>Acción</td>
 		</tr>
 
 		<?php
-			$consulta = "SELECT * FROM Entradas";
+			$consulta = "SELECT * FROM salidas";
 
 			$ejecutar = sqlsrv_query($con, $consulta);
 
@@ -75,16 +77,20 @@ include("conexion_sql.php");
 			while($fila = sqlsrv_fetch_array($ejecutar)){
 				$folio_salida = $fila['folio_salida'];
 				$fecha_salida = $fila['fecha_salida'];
+				$refaccion_salida = $fila['refaccion_salida'];
 				$cantidad_salida = $fila['cantidad_salida'];
+				$almacen_salida = $fila['almacen_salida'];
 				$i++;
 			
 
 		?>
 
 		<tr align="center">
-			<td><?php echo $folio_entrada; ?></td>
-			<td><?php echo $fecha_entrada; ?></td>
-			<td><?php echo $cantidad_entrada; ?></td>
+			<td><?php echo $folio_salida; ?></td>
+			<td><?php echo $fecha_salida; ?></td>
+			<td><?php echo $refaccion_salida; ?></td>
+			<td><?php echo $cantidad_salida; ?></td>
+			<td><?php echo $almacen_salida; ?></td>
 			
 			<td><a href="formularioEntradas.php?editar=<?php echo $id; ?>">Editar</a></td>
 			<td><a href="formularioEntradas.php?borrar=<?php echo $id; ?>">Borrar</a></td>
@@ -92,6 +98,7 @@ include("conexion_sql.php");
 
 		<?php } ?>
 <center> <input type="button" value="Imprimir" onclick="window.print()"> </center> 
+
 	</table>
 	</div>
 
