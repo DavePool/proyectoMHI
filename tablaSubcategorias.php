@@ -7,54 +7,85 @@ $ejecutar = sqlsrv_query($con, $consulta);
 
 <html>
 <head>
-	<meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+		   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+           <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+           <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+           <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">   
+            <link rel="stylesheet" type="text/css" href="stylus.css">
+            <link href="https://fonts.googleapis.com/css?
+                family=Quicksand=500" rel="stylesheet">
+
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+ 
     </head>
 <body>
+<div class="wrapper">
+        <div style="z-index: 1">
+            <header>
+                <nav>
+                    <div class="menu-icon">
+                        <i class="fa fa-bars fa-2x"></i>
+                    </div>
+                    <div class="logo">
+                       Subcategorias
+                    </div>
+                    <div class="menu">
+                        <ul>
+                            <li><a href="http://localhost:8080/proy/Proyecto.html">INICIO</a></li>
+                            <li><a href="http://localhost:8080/proy/formularioSubcategorias.php">Regresar</a></li>
+                            <li><a href="#">Reportes</a></li>
+                            <li><a href="#">Login</a></li>
 
-	<div class="col-md-8 col-md-offset-2">
-	<table class="table table-bordered table-responsive">
-		<tr>
-			<td>ID Subcategoria</td>
-			<td>Nombre Subcategoria</td>
-			<td>Categoria</td>
-		</tr>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+			<div class="table-responsive">
+					<table id="ex" class="table table-striped table-bordered">
+							<thead>
+								<tr>
+									<td>ID Subcategoria</td>
+									<td>Nombre Subcategoria</td>
+									<td>Categoria</td>
+									<td>Accion</td>
+									<td>Accion</td>
+								</tr>
+							</thead>
+							<?php
+								$consulta = "SELECT * FROM subcategorias";
 
-		<?php
-			$consulta = "SELECT * FROM subcategorias";
+								$ejecutar = sqlsrv_query($con, $consulta);
 
-			$ejecutar = sqlsrv_query($con, $consulta);
+								$i = 0;
 
-			$i = 0;
+								while($fila = sqlsrv_fetch_array($ejecutar)){
+								
+								
+									$id = $fila['id_subcategoria'];
+									$rfc = $fila['nombre_subcategoria'];
+									
+									$consultaA = sqlsrv_query($con,"select * from categorias where id_categoria =".$fila['categoria_subcategoria']);
+									$a = sqlsrv_fetch_array($consultaA);
 
-			while($fila = sqlsrv_fetch_array($ejecutar)){
-			
-			
-				$id = $fila['id_subcategoria'];
-				$rfc = $fila['nombre_subcategoria'];
-				
-				$consultaA = sqlsrv_query($con,"select * from categorias where id_categoria =".$fila['categoria_subcategoria']);
-				$a = sqlsrv_fetch_array($consultaA);
-
-				$categoria = $a['nombre_categoria'];
-				$i++;
-		?>
-
-		<tr align="center">
-			<td><?php echo $id; ?></td>
-			<td><?php echo $rfc; ?></td>
-			<td><?php echo $categoria; ?></td>
-			<td><a href="editarSubcategorias.php?editar=<?php echo $id; ?>">Editar</a></td>
-			<td><a href="tablaSubcategorias.php?borrar=<?php echo $id; ?>">Borrar</a></td>
-		</tr>
-		<?php } ?>
-
-	</table>
-	</div>
-
+									$categoria = $a['nombre_categoria'];
+									$i++;
+									echo'
+										<tr>
+											<td>'.$id.'</td>
+											<td>'.$rfc.'</td>
+											<td>'.$categoria.'</td>
+											<td><a href="editarSubcategorias.php?editar='.$id.'">Editar</a></td>
+											<td><a href="tablaSubcategorias.php?borrar='.$id.'">Borrar</a></td>
+										</tr>
+										';
+								} 
+								?>
+					</table>
+			</div>
+	    </div>
+</div>
 	<?php	
 	if(isset($_GET['borrar'])){
 
@@ -76,3 +107,30 @@ $ejecutar = sqlsrv_query($con, $consulta);
 
 </body>
 </html>
+
+ <script>
+ //Datatable
+ $(document).ready(function(){
+      $('#ex').DataTable();
+ });
+
+ // Menu-toggle button
+
+$(document).ready(function() {
+	  $(".menu-icon").on("click", function() {
+			$("nav ul").toggleClass("showing");
+	  });
+});
+
+// Scrolling Effect
+
+$(window).on("scroll", function() {
+	  if($(window).scrollTop()) {
+			$('nav').addClass('black');
+	  }
+
+	  else {
+			$('nav').removeClass('black');
+	  }
+})
+ </script>

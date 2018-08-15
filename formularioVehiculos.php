@@ -58,6 +58,7 @@ $ejecutarTipoMotores = sqlsrv_query($con, $consultaTipoMotores);
 				<label>ID Vehiculo:</label>
 				<input type="text" name="idP" class="form-control" placeholder="Escriba id Vehiculo"><br />
 			</div>
+
 			<div class="form-group">
                 <label> Año </label>
 				<select name="anio" >
@@ -123,13 +124,13 @@ $ejecutarTipoMotores = sqlsrv_query($con, $consultaTipoMotores);
        <?php
 		if(isset($_POST['insert'])){
 			$idP = $_POST['idP'];
-			$rfc = $_POST['rfc'];
-			$nombreP = $_POST['nombreP'];
-			$nombreCP = $_POST['ciudad_proveedor'];
-			$tel = $_POST['telefono'];
-			$cp = $_POST['codigoP'];
+			$nombreP = $_POST['anio'];
+			$nombreCP = $_POST['marca_vehiculo'];
+			$tel = $_POST['modelo_vehiculo'];
+			$cp = $_POST['tipo_motor'];
 
-			$insertar = "INSERT INTO  proveedores (id_proveedor, rfc_proveedor, nombre_proveedor, ciudad_proveedor,telefono_proveedor, cp_proveedor) VALUES ('$idP', '$rfc', '$nombreP', $nombreCP, $tel,$cp)";
+			$insertar = "INSERT INTO  vehiculos (id_vehiculo, anio_vehiculo, marca_vehiculo, modelo_vehiculo,tipoMotor_vehiculo)
+             VALUES ('$idP', '$nombreP', $nombreCP, $tel,$cp)";
 
 			$ejecutar = sqlsrv_query($con, $insertar);
 

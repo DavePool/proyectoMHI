@@ -29,7 +29,7 @@ $ejecutar = sqlsrv_query($con, $consulta);
                         <i class="fa fa-bars fa-2x"></i>
                     </div>
                     <div class="logo">
-                        Vehiculos
+                        Años De Vehiculos
                     </div>
                     <div class="menu">
                         <ul>
@@ -101,6 +101,7 @@ if (isset($_GET['borrar'])) {
 </html>
 
  <script>
+ //Datatable
  $(document).ready(function(){
       $('#ex').DataTable();
  });

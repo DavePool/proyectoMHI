@@ -7,64 +7,125 @@ $ejecutar = sqlsrv_query($con, $consulta);
 
 <html>
 <head>
-	<meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+           <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+           <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+           <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">   
+            <link rel="stylesheet" type="text/css" href="stylus.css">
+            <link href="https://fonts.googleapis.com/css?
+                family=Quicksand=500" rel="stylesheet">
+
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
     </head>
 <body>
+<div class="wrapper">
+          <div style="z-index: 1">
+				<header>
+					<nav>
+						<div class="menu-icon">
+							<i class="fa fa-bars fa-2x"></i>
+						</div>
+						<div class="logo">
+							Marcas De Vehiculos
+						</div>
+						<div class="menu">
+							<ul>
+								<li><a href="http://localhost:8080/proy/Proyecto.html">INICIO</a></li>
+								<li><a href="http://localhost:8080/proy/formularioMarcas.php">Regresar</a></li>
+								<li><a href="#">Reportes</a></li>
+								<li><a href="#">Login</a></li>
+							</ul>
+						</div>
+					</nav>
+				</header>
+				<div class="table-responsive">
+					<table id="ex" class="table table-striped table-bordered">
+							<thead>
+								<tr>
+									<td>ID Modelo</td>
+									<td>Descripcion Marca</td>
+									<td>Editar</td>
+									<td>Borrar</td>
+								</tr>
+							</thead>
+							<?php
+								$consulta = "SELECT * FROM marcas";
 
-	<div class="col-md-8 col-md-offset-2">
-	<table class="table table-bordered table-responsive">
-		<tr>
-			<td>ID Modelo</td>
-			<td>Descripcion Modelo</td>
-		</tr>
+								$ejecutar = sqlsrv_query($con, $consulta);
 
-		<?php
-			$consulta = "SELECT * FROM marcas";
+								$i = 0;
 
-			$ejecutar = sqlsrv_query($con, $consulta);
+								while($fila = sqlsrv_fetch_array($ejecutar)){
+									$id = $fila['id_marca'];
+									$rfc = $fila['nombre_marca'];
+									
+									$i++;
+									echo'
 
-			$i = 0;
+									<tr>
+										<td>'.$id.'</td>
+										<td>'.$rfc.'</td>
+										<td><a href="editarMarcas.php?editar='.$id.'">Editar</a></td>
+										<td><a href="tablaMarcas.php?borrar='.$id.'">Borrar</a></td>
+									</tr>
+									';
+								} 
+							?>
 
-			while($fila = sqlsrv_fetch_array($ejecutar)){
-				$id = $fila['id_marca'];
-				$rfc = $fila['nombre_marca'];
-				
-				$i++;
+					</table>
+				</div>
+		   </div>
+</div>
+		<?php	
+			if(isset($_GET['borrar'])){
+
+				$borrar_id = $_GET['borrar'];
+
+				$borrar = "DELETE FROM Marcas WHERE id_marca='$borrar_id'";
+
+				$ejecutar = sqlsrv_query($con, $borrar);
+
+				if($ejecutar){
+					echo "<script>alert('La Marca ha sido borrada')</script>";
+					echo "<script>window.open('formularioAnios.php', '_self')</script>";
+				}else{
+				echo "<script>alert('La marca esta enlazada, impocible borrar')</script>";
+					
+			}
+			}
 		?>
-
-		<tr align="center">
-			<td><?php echo $id; ?></td>
-			<td><?php echo $rfc; ?></td>
-			<td><a href="editarMarcas.php?editar=<?php echo $id; ?>">Editar</a></td>
-			<td><a href="tablaMarcas.php?borrar=<?php echo $id; ?>">Borrar</a></td>
-		</tr>
-		<?php } ?>
-
-	</table>
-	</div>
-
-	<?php	
-	if(isset($_GET['borrar'])){
-
-			$borrar_id = $_GET['borrar'];
-
-			$borrar = "DELETE FROM Marcas WHERE id_marca='$borrar_id'";
-
-			$ejecutar = sqlsrv_query($con, $borrar);
-
-			if($ejecutar){
-				echo "<script>alert('La Marca ha sido borrada')</script>";
-				echo "<script>window.open('formularioAnios.php', '_self')</script>";
-			}else{
-			echo "<script>alert('La marca esta enlazada, impocible borrar')</script>";
-				
-		}
-		}
-?>
 
 </body>
 </html>
+
+<script>
+ //Datatable
+ $(document).ready(function(){
+      $('#ex').DataTable();
+ });
+
+ // Menu-toggle button
+
+$(document).ready(function() {
+	  $(".menu-icon").on("click", function() {
+			$("nav ul").toggleClass("showing");
+	  });
+});
+
+// Scrolling Effect
+
+$(window).on("scroll", function() {
+	  if($(window).scrollTop()) {
+			$('nav').addClass('black');
+	  }
+
+	  else {
+			$('nav').removeClass('black');
+	  }
+})
+ </script>
+
+

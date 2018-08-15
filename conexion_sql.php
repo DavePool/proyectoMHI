@@ -1,5 +1,5 @@
 <?php
-$serverName = "DESKTOP-FOFEQRK\NOVA"; //serverName\instanceName
+$serverName = "DESKTOP-FOFEQRK\DAVID"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"proy", "UID"=>"p", "PWD"=>"123");
 $con = sqlsrv_connect( $serverName, $connectionInfo);
 

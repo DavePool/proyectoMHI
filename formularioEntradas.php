@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <?php
 include("conexion_sql.php");
+$consultaRefaccion = "select folio_refaccion, descripcion_refaccion from Refacciones order by folio_refaccion asc";
+$consultaAlmacen = "select id_almacen, nombre_almacen from Almacenes order by id_almacen asc";
+
+$ejecutarRefaccion = sqlsrv_query($con, $consultaRefaccion);
+$ejecutarAlmacen = sqlsrv_query($con, $consultaAlmacen);
+
 ?>
 <meta charset="utf-8">
 <html>
 <head> 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+           <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+           <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+           <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
 
-	<link rel="stylesheet" type="text/css" href="stylus.css">
-    <link href="https://fonts.googleapis.com/css?
+            <link rel="stylesheet" type="text/css" href="stylus.css">
+            <link href="https://fonts.googleapis.com/css?
                 family=Quicksand=500" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+ 
     <title>Registro De Entradas</title>
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">     			
 	</head>
    <body>
    <div class="wrapper">
+  	 <div style="z-index: 1">
             <header>
                 <nav>
                     <div class="menu-icon">
@@ -33,7 +41,7 @@ include("conexion_sql.php");
                     <div class="menu">
                         <ul>
                             <li><a href="http://localhost:8080/proy/Proyecto.html">INICIO</a></li>
-                            <li><a href="#">Acerca De</a></li>
+                            <li><a href="http://localhost:8080/proy/formularioRefacciones.php" target="_blank">Refacciones</a></li>
                             <li><a href="#">Reportes</a></li>
                             <li><a href="#">Login</a></li>
                             
@@ -53,10 +61,38 @@ include("conexion_sql.php");
 						<label>Fecha de Entrada:</label>
 						<input type="date" name="fecha_entrada" class="form-control" placeholder="Escriba la fecha de entrada"><br />
 					</div>
+
+					<div class="form-group">
+                		<label> Refaccion Entrada </label>
+							<select name="descripcion_refaccion">
+                  			  <option value="0"> Seleccionar Refaccion </option>
+                    
+								<?php while($fila = sqlsrv_fetch_array($ejecutarRefaccion)){ ?>
+
+									<option value="<?php echo $fila['folio_refaccion']; ?>"><?php echo $fila['descripcion_refaccion']; ?></option>
+								
+								<?php }?>
+              				  </select>
+					</div>
+									
 					<div class="form-group">
 						<label>Cantidad Entrada:</label>
 						<input type="text" name="cantidad_entrada" class="form-control" placeholder="Escriba la cantidad de entrada"><br />
 					</div>
+					
+					<div class="form-group">
+                		<label> Almacen </label>
+							<select name="nombre_almacen">
+                  			  <option value="0"> Seleccionar Almacen </option>
+                    
+								<?php while($fila = sqlsrv_fetch_array($ejecutarAlmacen)){ ?>
+
+									<option value="<?php echo $fila['id_almacen']; ?>"><?php echo $fila['nombre_almacen']; ?></option>
+								
+								<?php }?>
+              				  </select>
+					</div>
+
 					<div class="form-group">				
 						<input type="submit" name="insert" class="btn btn-warning" value="INSERTAR DATOS"><br />
 					</div>
@@ -68,11 +104,20 @@ include("conexion_sql.php");
 				if(isset($_POST['insert'])){
 					$folio_entrada = $_POST['folio_entrada'];
 					$fecha_entrada = $_POST['fecha_entrada'];
+					$refaEntrada = $_POST['descripcion_refaccion'];
 					$cantidad_entrada = $_POST['cantidad_entrada'];
+					$almacen_entrada = $_POST['nombre_almacen'];
 
-					$insertar = "INSERT INTO Refacciones (folio_entrada, fecha_entrada, existencia_refaccion )VALUES('$folio_entrada', '$fecha_entrada', '$cantidad_entrada')";
-
-					$ejecutar = sqlsrv_query($con, $insertar);
+					//$insertar = "INSERT INTO entradas (folio_entrada, fecha_entrada, refaccion_entrada, cantidad_entrada, almacen_entrada) 
+					//VALUES ('$folio_entrada', '$fecha_entrada','$refaEntrada','$cantidad_entrada','$almacen_entrada')";
+					
+					$ejecutar = sqlsrv_query($con,
+					 "exec insertEntrada
+					  @folio=$folio_entrada, 
+					  @fechaE='.$fecha_entrada.',
+					  @ref=$refaEntrada,
+					  @cant=$cantidad_entrada,
+					  @almacen=$almacen_entrada");
 
 					if($ejecutar){
 						echo "<h3>Insertado correctamente</h3>";
@@ -81,48 +126,62 @@ include("conexion_sql.php");
 				}
 
 			?>
+			<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+			<br /><br /><br /><br />
+				<div class="table-responsive">
+					<table id="ex" class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<td>Folio de Entrada</td>
+							<td>Fecha de entrada</td>
+							<td>Tipo de rafaccion</td>
+							<td>Cantidad entrada</td>
+							<td>Almacen entrada</td>
+							<td>Acción</td>
+							<td>Acción</td>
+						</tr>
+					</thead>
+						<?php
+							$consulta = "SELECT * FROM Entradas";
 
-			<div class="col-md-8 col-md-offset-2">
-			<table class="table table-bordered table-responsive">
-				<tr>
-					<td>Folio de Entrada</td>
-					<td>Fecha de entrada</td>
-					<td>Cantidad Existente</td>
-					<td>Acción</td>
-					<td>Acción</td>
-				</tr>
+							$ejecutar = sqlsrv_query($con, $consulta);
 
-				<?php
-					$consulta = "SELECT * FROM Entradas";
+							$i = 0;
 
-					$ejecutar = sqlsrv_query($con, $consulta);
+							while($fila = sqlsrv_fetch_array($ejecutar)){
+								$consultaA = sqlsrv_query($con, "select descripcion_refaccion from Refacciones where folio_refaccion = " . $fila['refaccion_entrada']);
+                                $consultaB = sqlsrv_query($con, "select nombre_almacen from Almacenes where id_almacen =" . $fila['almacen_entrada']);
+								
+								$a = sqlsrv_fetch_array($consultaA);
+								$ma = sqlsrv_fetch_array($consultaB);
+								
 
-					$i = 0;
-
-					while($fila = sqlsrv_fetch_array($ejecutar)){
-						$folio_entrada = $fila['folio_entrada'];
-						$fecha_entrada = $fila['fecha_entrada'];
-						$cantidad_entrada = $fila['cantidad_entrada'];
-						$i++;
-					
-
-				?>
-
-				<tr align="center">
-					<td><?php echo $folio_entrada; ?></td>
-					<td><?php echo $fecha_entrada; ?></td>
-					<td><?php echo $cantidad_entrada; ?></td>
-					
-					<td><a href="formularioEntradas.php?editar=<?php echo $id; ?>">Editar</a></td>
-					<td><a href="formularioEntradas.php?borrar=<?php echo $id; ?>">Borrar</a></td>
-				</tr>
-
-				<?php } ?>
-
-			</table>
-			<center> <input type="button" value="Imprimir" onclick="window.print()"> </center> 
+								$folio_entrada = $fila['folio_entrada'];
+								$fecha_entrada = $fila['fecha_entrada'];
+								$refaccion_entrada = $a['descripcion_refaccion'];
+								$cantidad_entrada = $fila['cantidad_entrada'];
+								$almacen_entrada = $ma['nombre_almacen'];
+								$i++;
+							
+								echo'
+									<tr>
+										<td>'.$folio_entrada.'</td>
+										<td>'.$fecha_entrada.'</td>
+										<td>'.$refaccion_entrada.'</td>
+										
+										<td>'.$cantidad_entrada.'</td>
+										<td>'.$almacen_entrada.'</td>
+										
+										<td><a href="formularioEntradas.php?editar='.$folio_entrada.'">Editar</a></td>
+										<td><a href="formularioEntradas.php?borrar='.$folio_entrada.'">Borrar</a></td>
+									</tr>
+									';
+							}
+						?>
+					</table>
 			</div>
 	</div>
+</div>
 	<?php
 		if(isset($_GET['editar'])){
 			include("editar.php");
@@ -148,9 +207,13 @@ include("conexion_sql.php");
 </body>
 </html>
 
-<script type="text/javascript">
+<script>
+ //Datatable
+ $(document).ready(function(){
+      $('#ex').DataTable();
+ });
 
-// Menu-toggle button
+ // Menu-toggle button
 
 $(document).ready(function() {
 	  $(".menu-icon").on("click", function() {
@@ -169,6 +232,6 @@ $(window).on("scroll", function() {
 			$('nav').removeClass('black');
 	  }
 })
+ </script>
 
 
-</script>
